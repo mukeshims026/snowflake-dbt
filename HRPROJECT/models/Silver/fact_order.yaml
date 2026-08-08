@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: fact_order
+    columns:
+      - name: order_id
+        tests:
+          - unique
+          - not_null
+      - name: customer_id
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customer')
+                field: cust_id
+      - name: item_id
+        tests:
+          - not_null
+          - relationships:
+              arguments: 
+                to: ref('dim_item')
+                field: item_id
+      - name: quantity
+        tests:
+          - greater_than_zero       #custom test to check if quantity is greater than zero (defined in macros)
+          

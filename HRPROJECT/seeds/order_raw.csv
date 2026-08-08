@@ -1,0 +1,21 @@
+ORDERID,ORDERDATE,ITEMID,ITEMNAME,QUANTITY,RATE,CUSTOMERID,CUSTOMERNAME,ADDRESS,CITY,COUNTRY
+1001,2026-07-01,501,Laptop,2,75000,201,Anita Sharma,MG Road,Delhi,India
+1002,2026-07-02,502,Smartphone,1,35000,202,John Smith,5th Avenue,New York,USA
+1003,2026-07-03,503,Headphones,3,2000,203,Sarah Johnson,Baker Street,London,UK
+1004,2026-07-04,504,Tablet,1,22000,204,Rajesh Kumar,Brigade Road,Bangalore,India
+1005,2026-07-05,505,Smartwatch,2,15000,205,Maria Garcia,Gran Via,Madrid,Spain
+1006,2026-07-06,506,Camera,1,45000,206,David Lee,Orchard Road,Singapore,Singapore
+1007,2026-07-07,507,Printer,1,12000,207,Emma Brown,George Street,Sydney,Australia
+1008,2026-07-08,508,Monitor,2,18000,208,Chen Wei,Nanjing Road,Shanghai,China
+1009,2026-07-09,509,Keyboard,5,1500,209,Ahmed Ali,Sheikh Zayed Road,Dubai,UAE
+1010,2026-07-10,510,Mouse,4,800,210,Olivia Martin,Champs-Élysées,Paris,France
+1011,2026-07-11,501,Laptop,1,76000,201,Anita Sharma,DLF Cyber City,Gurgaon,India
+1012,2026-07-12,502,Smartphone,2,34000,202,John Smith,Broadway,San Francisco,USA
+1013,2026-07-13,503,Headphones,1,2200,203,Sarah Johnson,Oxford Street,London,UK
+1014,2026-07-14,504,Tablet,3,21000,204,Rajesh Kumar,MG Road,Pune,India
+1015,2026-07-15,505,Smartwatch,1,15500,205,Maria Garcia,Diagonal Avenue,Barcelona,Spain
+1016,2026-07-16,506,Camera,2,46000,206,David Lee,Marina Bay,Singapore,Singapore
+1017,2026-07-17,507,Printer,2,12500,207,Emma Brown,Collins Street,Melbourne,Australia
+1018,2026-07-18,508,Monitor,1,18500,208,Chen Wei,Huaihai Road,Shanghai,China
+1019,2026-07-19,509,Keyboard,3,1600,209,Ahmed Ali,Al Fahidi Street,Dubai,UAE
+1020,2026-07-20,510,Mouse,5,850,210,Olivia Martin,Montmartre,Paris,France
