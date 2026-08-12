@@ -1,0 +1,168 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# dbt CI/CD Pipeline — Snowflake
+# ─────────────────────────────────────────────────────────────────────────────
+# Triggers:
+#   dev  branch push  → dbt run against DEV Snowflake target
+#   main branch push  → dbt run against QA  Snowflake target
+# ─────────────────────────────────────────────────────────────────────────────
+
+name: dbt Deploy
+
+on:
+  push:
+    branches:
+      - dev     # triggers DEV deployment
+      - main    # triggers QA  deployment
+    paths:
+      - "snowflake-dbt/**"    # only runs when dbt files change
+
+  pull_request:
+    branches:
+      - main    # runs dbt compile + test only on PRs (no dbt run)
+    paths:
+      - "snowflake-dbt/**"
+
+env:
+  DBT_PROJECT_DIR: snowflake-dbt/snowflake_dbt_project
+  DBT_PROFILES_DIR: snowflake-dbt
+  DBT_VERSION: "1.8.0"
+
+# ─────────────────────────────────────────────────────────────────────────────
+jobs:
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 1: Determine target environment from branch name
+  # ───────────────────────────────────────────────────────────────────────────
+  set-environment:
+    name: Resolve Target Environment
+    runs-on: ubuntu-latest
+    outputs:
+      environment: ${{ steps.resolve.outputs.environment }}
+    steps:
+      - name: Resolve environment from branch
+        id: resolve
+        run: |
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "environment=qa" >> $GITHUB_OUTPUT
+          else
+            echo "environment=dev" >> $GITHUB_OUTPUT
+          fi
+
+  # ───────────────────────────────────────────────────────────────────────────
+  # JOB 2: dbt run
+  # ───────────────────────────────────────────────────────────────────────────
+  dbt:
+    name: dbt ${{ needs.set-environment.outputs.environment }}
+    runs-on: ubuntu-latest
+    needs: set-environment
+    environment: ${{ needs.set-environment.outputs.environment }}
+
+    env:
+      ENV: ${{ needs.set-environment.outputs.environment }}
+
+    steps:
+      # ── 1. Checkout code ──────────────────────────────────────────────────
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ── 2. Setup Python ───────────────────────────────────────────────────
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # ── 3. Cache pip dependencies ─────────────────────────────────────────
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-dbt-snowflake-${{ env.DBT_VERSION }}
+
+      # ── 4. Install dbt-snowflake ──────────────────────────────────────────
+      - name: Install dbt-snowflake
+        run: pip install dbt-snowflake==${{ env.DBT_VERSION }}
+
+      # ── 5. Inject environment-specific Snowflake credentials ──────────────
+      #       Uses generic env var names — profiles.yml reads them via env_var()
+      - name: Export Snowflake credentials
+        run: |
+          if [[ "$ENV" == "qa" ]]; then
+            echo "DBT_SF_ACCOUNT=${{ secrets.DBT_SF_ACCOUNT_QA }}"     >> $GITHUB_ENV
+            echo "DBT_SF_USER=${{ secrets.DBT_SF_USER_QA }}"           >> $GITHUB_ENV
+            echo "DBT_SF_PASSWORD=${{ secrets.DBT_SF_PASSWORD_QA }}"   >> $GITHUB_ENV
+            echo "DBT_SF_ROLE=${{ secrets.DBT_SF_ROLE_QA }}"           >> $GITHUB_ENV
+            echo "DBT_SF_WAREHOUSE=${{ secrets.DBT_SF_WAREHOUSE_QA }}" >> $GITHUB_ENV
+            echo "DBT_SF_DATABASE=${{ secrets.DBT_SF_DATABASE_QA }}"   >> $GITHUB_ENV
+            echo "DBT_TARGET=qa"                                        >> $GITHUB_ENV
+          else
+            echo "DBT_SF_ACCOUNT=${{ secrets.DBT_SF_ACCOUNT_DEV }}"    >> $GITHUB_ENV
+            echo "DBT_SF_USER=${{ secrets.DBT_SF_USER_DEV }}"          >> $GITHUB_ENV
+            echo "DBT_SF_PASSWORD=${{ secrets.DBT_SF_PASSWORD_DEV }}"  >> $GITHUB_ENV
+            echo "DBT_SF_ROLE=${{ secrets.DBT_SF_ROLE_DEV }}"          >> $GITHUB_ENV
+            echo "DBT_SF_WAREHOUSE=${{ secrets.DBT_SF_WAREHOUSE_DEV }}" >> $GITHUB_ENV
+            echo "DBT_SF_DATABASE=${{ secrets.DBT_SF_DATABASE_DEV }}"  >> $GITHUB_ENV
+            echo "DBT_TARGET=dev"                                       >> $GITHUB_ENV
+          fi
+
+      # ── 6. dbt deps — install packages (dbt_utils, dbt_expectations) ──────
+      - name: dbt deps
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: |
+          dbt deps \
+            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }}
+
+      # ── 7. dbt compile — validate all SQL without running ─────────────────
+      - name: dbt compile
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: |
+          dbt compile \
+            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --target ${{ env.DBT_TARGET }}
+
+      # ── 8. dbt seed — load seed CSV files (e.g. country_codes.csv) ────────
+      - name: dbt seed
+        if: github.event_name == 'push'
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: |
+          dbt seed \
+            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --target ${{ env.DBT_TARGET }}
+
+      # ── 9. dbt run — execute all models ───────────────────────────────────
+      - name: dbt run
+        if: github.event_name == 'push'
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: |
+          dbt run \
+            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --target ${{ env.DBT_TARGET }}
+
+      # ── 10. dbt test — run all schema + custom tests ───────────────────────
+      - name: dbt test
+        if: github.event_name == 'push'
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: |
+          dbt test \
+            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --target ${{ env.DBT_TARGET }}
+
+      # ── 11. dbt snapshot — run snapshots (SCD Type 2) ─────────────────────
+      - name: dbt snapshot
+        if: github.event_name == 'push'
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: |
+          dbt snapshot \
+            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --target ${{ env.DBT_TARGET }}
+
+      # ── 12. Upload dbt artifacts (logs, run_results.json) ─────────────────
+      - name: Upload dbt artifacts
+        if: always()    # upload even if dbt test fails, for debugging
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-artifacts-${{ env.ENV }}-${{ github.run_id }}
+          path: |
+            ${{ env.DBT_PROJECT_DIR }}/target/run_results.json
+            ${{ env.DBT_PROJECT_DIR }}/target/manifest.json
+            ${{ env.DBT_PROJECT_DIR }}/logs/dbt.log
+          retention-days: 7
