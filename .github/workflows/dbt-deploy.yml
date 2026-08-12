@@ -15,6 +15,7 @@ on:
       - main    # triggers QA deployment
     paths:
       - "snowflake-dbt/**"       # dbt project changes
+      - "snowflake-dbt/HRPROJECT/**"
       - ".github/workflows/**"   # workflow file changes
 
   pull_request:
