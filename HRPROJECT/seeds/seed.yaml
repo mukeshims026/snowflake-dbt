@@ -1,0 +1,6 @@
+seeds:
+  - name: gender_raw
+    config:
+      column_types:
+        genderid: varchar(2)
+        gender: varchar(32)
