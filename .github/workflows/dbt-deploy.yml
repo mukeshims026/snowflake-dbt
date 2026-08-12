@@ -114,10 +114,9 @@ jobs:
 
       # ── 7. dbt compile — validate all SQL without running ─────────────────
       - name: dbt compile
-        # working-directory: ${{ env.DBT_PROJECT_DIR }}
+        working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt compile \
-            --project-dir ${{ env.DBT_PROJECT_DIR }} \
             --profiles-dir ../${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
