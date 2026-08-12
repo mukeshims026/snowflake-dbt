@@ -23,7 +23,7 @@ on:
       - "snowflake-dbt/**"
 
 env:
-  DBT_PROJECT_DIR: snowflake-dbt/snowflake_dbt_project
+  DBT_PROJECT_DIR: snowflake-dbt/HRPROJECT
   DBT_PROFILES_DIR: snowflake-dbt
   DBT_VERSION: "1.8.0"
 
