@@ -109,50 +109,55 @@ jobs:
 
       # ── 6. dbt deps — install packages (dbt_utils, dbt_expectations) ──────
       - name: dbt deps
-        working-directory: ${{ env.DBT_PROJECT_DIR }}
-        run: dbt deps --profiles-dir ${{ env.DBT_PROFILES_DIR }}
+        # working-directory: ${{ env.DBT_PROJECT_DIR }}
+        run: dbt deps --project-dir ${{ env.DBT_PROJECT_DIR }} --profiles-dir ${{ env.DBT_PROFILES_DIR }}
 
       # ── 7. dbt compile — validate all SQL without running ─────────────────
       - name: dbt compile
-        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        # working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt compile \
+            --project-dir ${{ env.DBT_PROJECT_DIR }} \
             --profiles-dir ../${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 8. dbt seed — load seed CSV files (e.g. country_codes.csv) ────────
       - name: dbt seed
         if: github.event_name == 'push'
-        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        # working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt seed \
+            --project-dir ${{ env.DBT_PROJECT_DIR }} \
             --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 9. dbt run — execute all models ───────────────────────────────────
       - name: dbt run
         if: github.event_name == 'push'
-        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        # working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt run \
+            --project-dir ${{ env.DBT_PROJECT_DIR }} \
             --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 10. dbt test — run all schema + custom tests ───────────────────────
       - name: dbt test
         if: github.event_name == 'push'
-        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        # working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt test \
+            --project-dir ${{ env.DBT_PROJECT_DIR }} \
             --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 11. dbt snapshot — run snapshots (SCD Type 2) ─────────────────────
       - name: dbt snapshot
         if: github.event_name == 'push'
-        working-directory: ${{ env.DBT_PROJECT_DIR }}
+        # working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt snapshot \
+            --project-dir ${{ env.DBT_PROJECT_DIR }} \
             --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
