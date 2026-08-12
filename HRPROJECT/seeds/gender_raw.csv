@@ -1,8 +1,8 @@
 genderid,gender
-'M','MALE'
-'F','FEMALE'
-'T','TRANSGENDER'
-'H','HOMO'
-'L','LESBIAN'
-'G','GAY'
-'O','OTHER'
+RM,MALE
+F,FEMALE
+T,TRANSGENDER
+H,HOMO
+L,LESBIAN
+G,GAY
+O,OTHER
