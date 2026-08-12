@@ -12,15 +12,18 @@ on:
   push:
     branches:
       - dev     # triggers DEV deployment
-      - main    # triggers QA  deployment
+      - main    # triggers QA deployment
     paths:
-      - "snowflake-dbt/**"    # only runs when dbt files change
+      - "snowflake-dbt/**"       # dbt project changes
+      - ".github/workflows/**"   # workflow file changes
 
   pull_request:
     branches:
       - main    # runs dbt compile + test only on PRs (no dbt run)
     paths:
       - "snowflake-dbt/**"
+      - ".github/workflows/**"
+
 
 env:
   DBT_PROJECT_DIR: snowflake-dbt/HRPROJECT
