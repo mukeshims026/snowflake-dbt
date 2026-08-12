@@ -13,10 +13,13 @@ on:
     branches:
       - dev     # triggers DEV deployment
       - main    # triggers QA deployment
-    paths:
-      - "snowflake-dbt/**"       # dbt project changes
-      - "snowflake-dbt/HRPROJECT/**"
-      - ".github/workflows/**"   # workflow file changes
+    paths-ignore:
+      - "docs/**"
+      - "README.md"
+    # paths:
+    #   - "snowflake-dbt/**"       # dbt project changes
+    #   - "snowflake-dbt/HRPROJECT/**"
+    #   - ".github/workflows/**"   # workflow file changes
 
   pull_request:
     branches:
