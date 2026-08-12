@@ -4,3 +4,4 @@ seeds:
       column_types:
         genderid: varchar(2)
         gender: varchar(32)
+        post-hook: "update {{ this }} set genderid = replace(genderid, '''', ''), gender = replace(gender, '''', '')"

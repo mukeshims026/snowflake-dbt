@@ -8,7 +8,6 @@
 
 name: dbt Deploy
 
-
 on:
   push:
     branches:
