@@ -117,7 +117,8 @@ jobs:
         working-directory: ${{ env.DBT_PROJECT_DIR }}
         run: |
           dbt compile \
-            --profiles-dir ../${{ env.DBT_PROFILES_DIR }} \
+            --project-dir ${{ env.DBT_PROJECT_DIR }} \
+            --profiles-dir ${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 8. dbt seed — load seed CSV files (e.g. country_codes.csv) ────────
