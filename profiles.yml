@@ -4,7 +4,7 @@
 # GitHub Actions. No credentials are hardcoded here.
 # ─────────────────────────────────────────────────────────────────────────────
 
-snowflake_profile:       # must match "profile:" in dbt_project.yml
+HRPROFILE:       # must match "profile:" in dbt_project.yml
   target: dev            # default target for local runs
   outputs:
 
