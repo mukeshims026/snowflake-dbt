@@ -110,8 +110,8 @@ jobs:
       # ── 6. dbt deps — install packages (dbt_utils, dbt_expectations) ──────
       - name: dbt deps
         working-directory: ${{ env.DBT_PROJECT_DIR }}
-        run: dbt deps --profiles-dir ${{ env.DBT_PROFILES_DIR }}
-
+        run: dbt deps --project-dir ${{ env.DBT_PROJECT_DIR }} --profiles-dir ${{ env.DBT_PROFILES_DIR }}
+        
       # ── 7. dbt compile — validate all SQL without running ─────────────────
       - name: dbt compile
         working-directory: ${{ env.DBT_PROJECT_DIR }}
