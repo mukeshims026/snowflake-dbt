@@ -99,8 +99,7 @@ jobs:
             echo "DBT_SF_DATABASE=${{ secrets.DBT_SF_DATABASE_QA }}"   >> $GITHUB_ENV
             echo "DBT_TARGET=qa"                                        >> $GITHUB_ENV
           else
-            # echo "DBT_SF_ACCOUNT=${{ secrets.DBT_SF_ACCOUNT_DEV }}"    >> $GITHUB_ENV
-            echo "DBT_SF_ACCOUNT='NOHZSYP-WU68667.snowflakecomputing.com'" >> $GITHUB_ENV
+            echo "DBT_SF_ACCOUNT=${{ secrets.DBT_SF_ACCOUNT_DEV }}"    >> $GITHUB_ENV
             echo "DBT_SF_USER=${{ secrets.DBT_SF_USER_DEV }}"          >> $GITHUB_ENV
             echo "DBT_SF_PASSWORD=${{ secrets.DBT_SF_PASSWORD_DEV }}"  >> $GITHUB_ENV
             echo "DBT_SF_ROLE=${{ secrets.DBT_SF_ROLE_DEV }}"          >> $GITHUB_ENV
@@ -130,7 +129,7 @@ jobs:
         run: |
           dbt seed \
             --project-dir ${{ env.DBT_PROJECT_DIR }} \
-            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --profiles-dir ${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 9. dbt run — execute all models ───────────────────────────────────
@@ -140,7 +139,7 @@ jobs:
         run: |
           dbt run \
             --project-dir ${{ env.DBT_PROJECT_DIR }} \
-            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --profiles-dir ${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 10. dbt test — run all schema + custom tests ───────────────────────
@@ -150,7 +149,7 @@ jobs:
         run: |
           dbt test \
             --project-dir ${{ env.DBT_PROJECT_DIR }} \
-            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --profiles-dir ${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 11. dbt snapshot — run snapshots (SCD Type 2) ─────────────────────
@@ -160,7 +159,7 @@ jobs:
         run: |
           dbt snapshot \
             --project-dir ${{ env.DBT_PROJECT_DIR }} \
-            --profiles-dir ../../${{ env.DBT_PROFILES_DIR }} \
+            --profiles-dir ${{ env.DBT_PROFILES_DIR }} \
             --target ${{ env.DBT_TARGET }}
 
       # ── 12. Upload dbt artifacts (logs, run_results.json) ─────────────────
