@@ -99,7 +99,8 @@ jobs:
             echo "DBT_SF_DATABASE=${{ secrets.DBT_SF_DATABASE_QA }}"   >> $GITHUB_ENV
             echo "DBT_TARGET=qa"                                        >> $GITHUB_ENV
           else
-            echo "DBT_SF_ACCOUNT=${{ secrets.DBT_SF_ACCOUNT_DEV }}"    >> $GITHUB_ENV
+            # echo "DBT_SF_ACCOUNT=${{ secrets.DBT_SF_ACCOUNT_DEV }}"    >> $GITHUB_ENV
+            echo "DBT_SF_ACCOUNT='NOHZSYP-WU68667.snowflakecomputing.com'" >> $GITHUB_ENV
             echo "DBT_SF_USER=${{ secrets.DBT_SF_USER_DEV }}"          >> $GITHUB_ENV
             echo "DBT_SF_PASSWORD=${{ secrets.DBT_SF_PASSWORD_DEV }}"  >> $GITHUB_ENV
             echo "DBT_SF_ROLE=${{ secrets.DBT_SF_ROLE_DEV }}"          >> $GITHUB_ENV
