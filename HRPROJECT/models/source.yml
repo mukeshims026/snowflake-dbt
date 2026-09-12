@@ -15,6 +15,3 @@ sources:
     tables:
       - name: country_raw
         description: "Raw country data from upstream"
-
-      - name: order_raw
-        description: "Raw order data from upstream"
