@@ -1,9 +1,9 @@
 version: 2
 
 sources:
-  - name: raw                # logical name for the source
+  - name: raw              # logical name for the source
     schema: bronze         # schema in your warehouse
-    database: hrdb      # optional, if you use multiple databases
+    database: SalesDB      # optional, if you use multiple databases
     tables:
       - name: country_raw
         description: "Raw country data from upstream"
