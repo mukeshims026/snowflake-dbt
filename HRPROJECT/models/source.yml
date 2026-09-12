@@ -2,8 +2,16 @@ version: 2
 
 sources:
   - name: raw              # logical name for the source
-    schema: bronze         # schema in your warehouse
-    database: SalesDB      # optional, if you use multiple databases
+    schema: RAW         # schema in your warehouse
+    database: SALESDB      # optional, if you use multiple databases
+    tables:
+      - name: order_raw
+        description: "Raw order data from upstream"
+
+
+  - name: rawseed              # logical name for the source
+    schema: BRONZE         # schema in your warehouse
+    database: SALESDB      # optional, if you use multiple databases
     tables:
       - name: country_raw
         description: "Raw country data from upstream"

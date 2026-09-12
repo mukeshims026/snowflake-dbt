@@ -8,4 +8,4 @@
 
 select
     COUNTRYID,COUNTRYNAME,ISCCODE,CAPITAL
-from {{ source('raw', 'country_raw') }}
+from {{ source('rawseed', 'country_raw') }}
